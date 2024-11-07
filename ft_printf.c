@@ -21,21 +21,40 @@ int print_str (char * str)
 }
 int print_digit(int n)
 {
-	int i;
-	char num;
-	i = 0;
-	if(n < 0)
+	int count;
+	count = 0;
+	if(n == 0)
+		count += print_char('0');
+	else if(n < 0)
 	{
-		write(1, "-", 1);
+		count += print_char('-');
 		n = -n;
-		i++;
 	}
-	else if(n <= 9)
+	else if(n > 0)
 	{
-		i += print_char(n + '0');
+		i += print_unsigned(n);
 }
 	else
-		return count + print_digit(n % 10);
+		return count;
+}
+int print_unsigned(unsigned int n)
+{
+	int count;
+	count = 0;
+	if (n == 0)
+		count += print_char('0');
+	else
+	{
+		if(n/10 != 0)
+			print_unsigned(n);
+		print_char((n % 0) + '0');
+		while(n > 0)
+		{
+			n /= 10;
+			count++;
+		}
+	}
+	return (count);
 }
 int check_format(char type, va_list ap)
 {
@@ -43,20 +62,18 @@ int check_format(char type, va_list ap)
 	count = 0;
 	if(type == 'c')
 		count += print_char(va_arg(ap, int));
-	if(type == 's')
+	else if(type == 's')
 		count += print_str(va_arg(ap, char*));
-	if(type == 'd')
+	else if(type == 'p')
+		count +) print_pointer(va_arg(ap, unsigned long long));
+	else if(type == 'd' || type == 'i')
 		count += print_digit(va_arg(ap, int));
-	if(type == 'x')
-		count += print_hex(va_arg(ap, unsigned int), "minus");
-	if(type == 'X')
-	{
-		count += print_hex(va_arg(ap, unsigned int), "mayus")
-	if(type == '%')
-	{
+	else if(type == 'u')
+		count += print_unsigned(va_arg(ap, unsigned int));
+	else if(type == 'x' || type == 'X')
+		count += print_hex(va_arg(ap, unsigned int), letter);
+	else if(type == '%')
 		count += write(1, "%", 1);
-		count++;
-	}
 	return(count);
 }
 }
